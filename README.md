@@ -10,6 +10,12 @@ A systematic approach to building complex software by delegating prompt engineer
 
 Perfect for complex refactoring, new features, and multi-step tasks where you want rigorous specifications without manually crafting detailed prompts.
 
+### [Interactive Forms](./interactive-forms/)
+
+Structured questionnaires with visual tab navigation that guide you through complex requirement gathering. Generate ASCII-based forms that break down decisions into clear, manageable sections.
+
+Perfect for configurations, project initialization, and feature planning where you need to consider multiple options and their implications. Works seamlessly with meta-prompting for end-to-end workflows.
+
 ---
 
 More prompts coming soon.
