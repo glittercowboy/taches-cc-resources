@@ -74,6 +74,24 @@ The skill-based evolution of the meta-prompting system above. `/create-meta-prom
 
 Perfect for complex tasks that benefit from staged workflows where each stage produces artifacts for the next.
 
+### [Create Slash Commands](./skills/create-slash-commands/)
+
+Expert guidance for creating Claude Code slash commands. Covers YAML frontmatter, XML structure, dynamic context loading, and argument handling. Use when you want to create reusable `/command-name` prompts for your team or personal workflows.
+
+Perfect for standardizing operations like deployments, code reviews, or project-specific workflows.
+
+### [Create Subagents](./skills/create-subagents/)
+
+Expert guidance for creating specialized Claude instances that run in isolated contexts. Covers system prompt design, tool access configuration, and multi-agent orchestration with the Task tool. Use when you need focused agents for specific tasks like code review, testing, or research.
+
+Perfect for delegating complex tasks to autonomous agents that return results without user interaction.
+
+### [Create Hooks](./skills/create-hooks/)
+
+Expert guidance for creating event-driven automation in Claude Code. Covers PreToolUse, PostToolUse, Stop, SessionStart, and other hook types. Use when you want to validate commands, automate workflows, inject context, or add notifications.
+
+Perfect for project-specific automation, safety checks, and workflow customization without modifying Claude's core behavior.
+
 ---
 
 More resources coming soon.
