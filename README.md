@@ -20,7 +20,8 @@ Dream big. Happy building.
 - **Thinking Models**: Mental frameworks (first principles, inversion, 80/20, etc.)
 - **Deep Analysis**: Systematic debugging methodology with evidence and hypothesis testing
 
-**[Skills](#skills)** (6 total) - Autonomous workflows that research, generate, and self-heal
+**[Skills](#skills)** (7 total) - Autonomous workflows that research, generate, and self-heal
+- **Create Plans**: Hierarchical project planning for solo developer + Claude workflows
 - **Create Agent Skills**: Build new skills by describing what you want
 - **Create Meta-Prompts**: Generate staged workflow prompts with dependency detection
 - **Create Slash Commands**: Build custom commands with proper structure
@@ -139,6 +140,20 @@ Specialized subagents used by the audit commands.
 - [`subagent-auditor`](./agents/subagent-auditor.md) - Expert subagent configuration auditor
 
 ## Skills
+
+### [Create Plans](./skills/create-plans/)
+
+Hierarchical project planning optimized for solo developer + Claude. Create executable plans that Claude runs, not enterprise documentation that sits unused.
+
+**PLAN.md IS the prompt** - not documentation that gets transformed later. Brief → Roadmap → Research (if needed) → PLAN.md → Execute → SUMMARY.md.
+
+**Domain-aware:** Optionally loads framework-specific expertise from `~/.claude/skills/build/` (e.g., macos-apps, iphone-apps) to make plans concrete instead of generic.
+
+**Quality controls:** Research includes verification checklists, blind spots review, critical claims audits, and streaming writes to prevent gaps and token limit failures.
+
+**Context management:** Auto-handoff at 10% tokens remaining. Git versioning commits outcomes, not process.
+
+See [create-plans README](./skills/create-plans/README.md) for full documentation.
 
 ### [Create Agent Skills](./skills/create-agent-skills/)
 
