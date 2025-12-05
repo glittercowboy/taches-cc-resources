@@ -1,0 +1,28 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+.temp/
+
+# Node (if used for tooling)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Test outputs
+.workflow/
+.planning/
+test-output/

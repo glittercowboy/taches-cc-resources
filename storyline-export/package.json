@@ -1,0 +1,50 @@
+{
+  "name": "@prillcode/storyline",
+  "version": "1.0.0",
+  "description": "Story-driven development workflow for Claude Code. Transform PRDs into working code through Epic → Story → Spec → Implementation pipeline.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prillcode/storyline.git"
+  },
+  "author": "prillcode",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "development-workflow",
+    "story-driven-development",
+    "agile",
+    "epic",
+    "user-stories",
+    "technical-specs",
+    "prd",
+    "product-requirements",
+    "ai-development",
+    "autonomous-development"
+  ],
+  "homepage": "https://github.com/prillcode/storyline#readme",
+  "bugs": {
+    "url": "https://github.com/prillcode/storyline/issues"
+  },
+  "dependencies": {
+    "taches-cc-resources": "github:glittercowboy/taches-cc-resources"
+  },
+  "scripts": {
+    "install-cli": "bash install.sh",
+    "uninstall-cli": "bash uninstall.sh"
+  },
+  "engines": {
+    "claude-code": ">=1.0.0"
+  },
+  "files": [
+    "skills/",
+    "commands/",
+    "examples/",
+    "docs/",
+    "install.sh",
+    "uninstall.sh",
+    "README.md",
+    "CREDITS.md",
+    "LICENSE"
+  ]
+}
