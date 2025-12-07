@@ -7,11 +7,11 @@ allowed-tools: [Read, Task, Bash(ls:*), Bash(mv:*), Bash(git:*)]
 
 <context>
 Git status: !`git status --short`
-Recent prompts: !`ls -t ./prompts/*.md | head -5`
+Recent prompts: !`ls -t .prompts//*.md | head -5`
 </context>
 
 <objective>
-Execute one or more prompts from `./prompts/` as delegated sub-tasks with fresh context. Supports single prompt execution, parallel execution of multiple independent prompts, and sequential execution of dependent prompts.
+Execute one or more prompts from `.prompts//` as delegated sub-tasks with fresh context. Supports single prompt execution, parallel execution of multiple independent prompts, and sequential execution of dependent prompts.
 </objective>
 
 <input>
@@ -47,7 +47,7 @@ Parse $ARGUMENTS to extract:
 <step2_resolve_files>
 For each prompt number/name:
 
-- If empty or "last": Find with `!ls -t ./prompts/*.md | head -1`
+- If empty or "last": Find with `!ls -t .prompts//*.md | head -1`
 - If a number: Find file matching that zero-padded number (e.g., "5" matches "005-_.md", "42" matches "042-_.md")
 - If text: Find files containing that string in the filename
 
@@ -65,7 +65,7 @@ For each prompt number/name:
 1. Read the complete contents of the prompt file
 2. Delegate as sub-task using Task tool with subagent_type="general-purpose"
 3. Wait for completion
-4. Archive prompt to `./prompts/completed/` with metadata
+4. Archive prompt to `.prompts//completed/` with metadata
 5. Commit all work:
    - Stage files YOU modified with `git add [file]` (never `git add .`)
    - Determine appropriate commit type based on changes (fix|feat|refactor|style|docs|test|chore)
@@ -119,8 +119,8 @@ By delegating to a sub-task, the actual implementation work happens in fresh con
 
 <output>
 <single_prompt_output>
-✓ Executed: ./prompts/005-implement-feature.md
-✓ Archived to: ./prompts/completed/005-implement-feature.md
+✓ Executed: .prompts//005-implement-feature.md
+✓ Archived to: .prompts//completed/005-implement-feature.md
 
 <results>
 [Summary of what the sub-task accomplished]
@@ -130,11 +130,11 @@ By delegating to a sub-task, the actual implementation work happens in fresh con
 <parallel_output>
 ✓ Executed in PARALLEL:
 
-- ./prompts/005-implement-auth.md
-- ./prompts/006-implement-api.md
-- ./prompts/007-implement-ui.md
+- .prompts//005-implement-auth.md
+- .prompts//006-implement-api.md
+- .prompts//007-implement-ui.md
 
-✓ All archived to ./prompts/completed/
+✓ All archived to .prompts//completed/
 
 <results>
 [Consolidated summary of all sub-task results]
@@ -144,11 +144,11 @@ By delegating to a sub-task, the actual implementation work happens in fresh con
 <sequential_output>
 ✓ Executed SEQUENTIALLY:
 
-1. ./prompts/005-setup-database.md → Success
-2. ./prompts/006-create-migrations.md → Success
-3. ./prompts/007-seed-data.md → Success
+1. .prompts//005-setup-database.md → Success
+2. .prompts//006-create-migrations.md → Success
+3. .prompts//007-seed-data.md → Success
 
-✓ All archived to ./prompts/completed/
+✓ All archived to .prompts//completed/
 
 <results>
 [Consolidated summary showing progression through each step]
