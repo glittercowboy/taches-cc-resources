@@ -5,7 +5,7 @@ allowed-tools: [Read, Write, Glob, SlashCommand, AskUserQuestion]
 ---
 
 <context>
-Before generating prompts, use the Glob tool to check `.prompts//*.md` to:
+Before generating prompts, use the Glob tool to check `.prompts/*.md` to:
 1. Determine if the prompts directory exists
 2. Find the highest numbered prompt to determine next sequence number
 </context>
@@ -169,13 +169,13 @@ Create the prompt(s) and save to the prompts folder.
 **For single prompts:**
 
 - Generate one prompt file following the patterns below
-- Save as `.prompts//[number]-[name].md`
+- Save as `.prompts/[number]-[name].md`
 
 **For multiple prompts:**
 
 - Determine how many prompts are needed (typically 2-4)
 - Generate each prompt with clear, focused objectives
-- Save sequentially: `.prompts//[N]-[name].md`, `.prompts//[N+1]-[name].md`, etc.
+- Save sequentially: `.prompts/[N]-[name].md`, `.prompts/[N+1]-[name].md`, etc.
 - Each prompt should be self-contained and executable independently
 
 **Prompt Construction Rules**
@@ -213,10 +213,10 @@ Conditionally Include (based on analysis):
 Output Format:
 
 1. Generate prompt content with XML structure
-2. Save to: `.prompts//[number]-[descriptive-name].md`
-   - Number format: 001, 002, 003, etc. (check existing files in .prompts// to determine next number)
+2. Save to: `.prompts/[number]-[descriptive-name].md`
+   - Number format: 001, 002, 003, etc. (check existing files in .prompts/ to determine next number)
    - Name format: lowercase, hyphen-separated, max 5 words describing the task
-   - Example: `.prompts//001-implement-user-authentication.md`
+   - Example: `.prompts/001-implement-user-authentication.md`
 3. File should contain ONLY the prompt, no explanations or metadata
 
 <prompt_patterns>
@@ -364,10 +364,10 @@ After saving the prompt(s), present this decision tree to the user:
 **Prompt(s) created successfully!**
 
 <single_prompt_scenario>
-If you created ONE prompt (e.g., `.prompts//005-implement-feature.md`):
+If you created ONE prompt (e.g., `.prompts/005-implement-feature.md`):
 
 <presentation>
-✓ Saved prompt to .prompts//005-implement-feature.md
+✓ Saved prompt to .prompts/005-implement-feature.md
 
 What's next?
 
@@ -389,9 +389,9 @@ If you created MULTIPLE prompts that CAN run in parallel (e.g., independent modu
 
 <presentation>
 ✓ Saved prompts:
-  - .prompts//005-implement-auth.md
-  - .prompts//006-implement-api.md
-  - .prompts//007-implement-ui.md
+  - .prompts/005-implement-auth.md
+  - .prompts/006-implement-api.md
+  - .prompts/007-implement-ui.md
 
 Execution strategy: These prompts can run in PARALLEL (independent tasks, no shared files)
 
@@ -416,9 +416,9 @@ If you created MULTIPLE prompts that MUST run sequentially (e.g., dependencies, 
 
 <presentation>
 ✓ Saved prompts:
-  - .prompts//005-setup-database.md
-  - .prompts//006-create-migrations.md
-  - .prompts//007-seed-data.md
+  - .prompts/005-setup-database.md
+  - .prompts/006-create-migrations.md
+  - .prompts/007-seed-data.md
 
 Execution strategy: These prompts must run SEQUENTIALLY (dependencies: 005 → 006 → 007)
 
@@ -448,7 +448,7 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
 - User selected "Proceed" from decision gate
 - Appropriate depth, structure, and execution strategy determined
 - Prompt(s) generated with proper XML structure following patterns
-- Files saved to .prompts//[number]-[name].md with correct sequential numbering
+- Files saved to .prompts/[number]-[name].md with correct sequential numbering
 - Decision tree presented to user based on single/parallel/sequential scenario
 - User choice executed (SlashCommand invoked if user selects run option)
 </success_criteria>
@@ -457,8 +457,8 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
 
 - **Intake first**: Complete step_0_intake_gate before generating. Use AskUserQuestion for structured clarification.
 - **Decision gate loop**: Keep asking questions until user selects "Proceed"
-- Use Glob tool with `.prompts//*.md` to find existing prompts and determine next number in sequence
-- If .prompts// doesn't exist, use Write tool to create the first prompt (Write will create parent directories)
+- Use Glob tool with `.prompts/*.md` to find existing prompts and determine next number in sequence
+- If .prompts/ doesn't exist, use Write tool to create the first prompt (Write will create parent directories)
 - Keep prompt filenames descriptive but concise
 - Adapt the XML structure to fit the task - not every tag is needed every time
 - Consider the user's working directory as the root for all relative paths
