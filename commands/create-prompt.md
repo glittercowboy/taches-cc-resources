@@ -5,9 +5,9 @@ allowed-tools: [Read, Write, Glob, SlashCommand, AskUserQuestion]
 ---
 
 <context>
-Before generating prompts, use the Glob tool to check `./prompts/*.md` to:
+Before generating prompts, use the Glob tool to check `./prompts/*.md` and `./prompts/completed/*.md` to:
 1. Determine if the prompts directory exists
-2. Find the highest numbered prompt to determine next sequence number
+2. Find the highest numbered prompt across both directories to determine next sequence number (archived prompts in completed/ still count)
 </context>
 
 <objective>
@@ -214,7 +214,7 @@ Output Format:
 
 1. Generate prompt content with XML structure
 2. Save to: `./prompts/[number]-[descriptive-name].md`
-   - Number format: 001, 002, 003, etc. (check existing files in ./prompts/ to determine next number)
+   - Number format: 001, 002, 003, etc. (check both ./prompts/ and ./prompts/completed/ to determine next number)
    - Name format: lowercase, hyphen-separated, max 5 words describing the task
    - Example: `./prompts/001-implement-user-authentication.md`
 3. File should contain ONLY the prompt, no explanations or metadata
@@ -457,7 +457,7 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
 
 - **Intake first**: Complete step_0_intake_gate before generating. Use AskUserQuestion for structured clarification.
 - **Decision gate loop**: Keep asking questions until user selects "Proceed"
-- Use Glob tool with `./prompts/*.md` to find existing prompts and determine next number in sequence
+- Use Glob tool with `./prompts/*.md` and `./prompts/completed/*.md` to find existing prompts (including archived) and determine next number in sequence
 - If ./prompts/ doesn't exist, use Write tool to create the first prompt (Write will create parent directories)
 - Keep prompt filenames descriptive but concise
 - Adapt the XML structure to fit the task - not every tag is needed every time
