@@ -20,7 +20,7 @@ Dream big. Happy building.
 - **Thinking Models**: Mental frameworks (first principles, inversion, 80/20, etc.)
 - **Deep Analysis**: Systematic debugging methodology with evidence and hypothesis testing
 
-**[Skills](#skills)** (8 total) - Autonomous workflows that research, generate, and self-heal
+**[Skills](#skills)** (9 total) - Autonomous workflows that research, generate, and self-heal
 - **Create Plans**: Hierarchical project planning for solo developer + Claude workflows
 - **Create MCP Servers**: Build MCP servers for Claude integrations (Python/TypeScript)
 - **Create Agent Skills**: Build new skills by describing what you want
@@ -29,6 +29,7 @@ Dream big. Happy building.
 - **Create Subagents**: Build specialized Claude instances for isolated contexts
 - **Create Hooks**: Build event-driven automation
 - **Debug Like Expert**: Systematic debugging with evidence gathering and hypothesis testing
+- **Setup Ralph**: Set up Geoffrey Huntley's Ralph Wiggum autonomous coding loop
 
 **[Agents](#agents)** (3 total) - Specialized subagents for validation and quality
 - **skill-auditor**: Reviews skills for best practices compliance
@@ -213,6 +214,18 @@ Commands: `/create-mcp-servers` (via skill routing)
 Deep analysis debugging mode for complex issues. Activates methodical investigation protocol with evidence gathering, hypothesis testing, and rigorous verification. Use when standard troubleshooting fails or when issues require systematic root cause analysis.
 
 Commands: `/debug`
+
+### [Setup Ralph](./skills/setup-ralph/)
+
+Set up Geoffrey Huntley's Ralph Wiggum autonomous coding loop. Ralph is an autonomous AI coding methodology that uses iterative loops with task selection, execution, and validation. Fresh context every iteration prevents context poisoning.
+
+**Three phases:** Planning (gap analysis → TODO list), Building (implement one task, validate, commit), Observation (you engineer the environment).
+
+**Key concepts:** Backpressure via tests/lints/builds, file I/O as state (IMPLEMENTATION_PLAN.md), parallel subagents for reads, prompts evolve through observation.
+
+Commands: `/setup-ralph`
+
+See [setup-ralph README](./skills/setup-ralph/README.md) for full documentation.
 
 ---
 
