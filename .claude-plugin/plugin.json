@@ -1,7 +1,7 @@
 {
   "name": "taches-cc-resources",
   "description": "Curated Claude Code skills and commands for prompt engineering, MCP servers, subagents, hooks, and productivity workflows",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "Lex Christopherson",
     "email": "lex@glittercowboy.com"
