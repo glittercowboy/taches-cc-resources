@@ -18,6 +18,113 @@ Create highly effective prompts for: $ARGUMENTS
 Your goal is to create prompts that get things done accurately and efficiently.
 </objective>
 
+<!-- REFERENCE: Prompt templates — read these before processing begins -->
+<prompt_patterns>
+
+For Coding Tasks:
+
+```xml
+<objective>
+[Clear statement of what needs to be built/fixed/refactored]
+Explain the end goal and why this matters.
+</objective>
+
+<context>
+[Project type, tech stack, relevant constraints]
+[Who will use this, what it's for]
+@[relevant files to examine]
+</context>
+
+<requirements>
+[Specific functional requirements]
+[Performance or quality requirements]
+Be explicit about what Claude should do.
+</requirements>
+
+<implementation>
+[Any specific approaches or patterns to follow]
+[What to avoid and WHY - explain the reasoning behind constraints]
+</implementation>
+
+<output>
+Create/modify files with relative paths:
+- `./path/to/file.ext` - [what this file should contain]
+</output>
+
+<verification>
+Before declaring complete, verify your work:
+- [Specific test or check to perform]
+- [How to confirm the solution works]
+</verification>
+
+<success_criteria>
+[Clear, measurable criteria for success]
+</success_criteria>
+```
+
+For Analysis Tasks:
+
+```xml
+<objective>
+[What needs to be analyzed and why]
+[What the analysis will be used for]
+</objective>
+
+<data_sources>
+@[files or data to analyze]
+![relevant commands to gather data]
+</data_sources>
+
+<analysis_requirements>
+[Specific metrics or patterns to identify]
+[Depth of analysis needed - use "thoroughly analyze" for complex tasks]
+[Any comparisons or benchmarks]
+</analysis_requirements>
+
+<output_format>
+[How results should be structured]
+Save analysis to: `./analyses/[descriptive-name].md`
+</output_format>
+
+<verification>
+[How to validate the analysis is complete and accurate]
+</verification>
+```
+
+For Research Tasks:
+
+```xml
+<research_objective>
+[What information needs to be gathered]
+[Intended use of the research]
+For complex research, include: "Thoroughly explore multiple sources and consider various perspectives"
+</research_objective>
+
+<scope>
+[Boundaries of the research]
+[Sources to prioritize or avoid]
+[Time period or version constraints]
+</scope>
+
+<deliverables>
+[Format of research output]
+[Level of detail needed]
+Save findings to: `./research/[topic].md`
+</deliverables>
+
+<evaluation_criteria>
+[How to assess quality/relevance of sources]
+[Key questions that must be answered]
+</evaluation_criteria>
+
+<verification>
+Before completing, verify:
+- [All key questions are answered]
+- [Sources are credible and relevant]
+</verification>
+```
+</prompt_patterns>
+
 <process>
 
 <step_0_intake_gate>
@@ -219,142 +326,59 @@ Output Format:
    - Example: `./prompts/001-implement-user-authentication.md`
 3. File should contain ONLY the prompt, no explanations or metadata
 
-<prompt_patterns>
-
-For Coding Tasks:
-
-```xml
-<objective>
-[Clear statement of what needs to be built/fixed/refactored]
-Explain the end goal and why this matters.
-</objective>
-
-<context>
-[Project type, tech stack, relevant constraints]
-[Who will use this, what it's for]
-@[relevant files to examine]
-</context>
-
-<requirements>
-[Specific functional requirements]
-[Performance or quality requirements]
-Be explicit about what Claude should do.
-</requirements>
-
-<implementation>
-[Any specific approaches or patterns to follow]
-[What to avoid and WHY - explain the reasoning behind constraints]
-</implementation>
-
-<output>
-Create/modify files with relative paths:
-- `./path/to/file.ext` - [what this file should contain]
-</output>
-
-<verification>
-Before declaring complete, verify your work:
-- [Specific test or check to perform]
-- [How to confirm the solution works]
-</verification>
-
-<success_criteria>
-[Clear, measurable criteria for success]
-</success_criteria>
-```
-
-For Analysis Tasks:
-
-```xml
-<objective>
-[What needs to be analyzed and why]
-[What the analysis will be used for]
-</objective>
-
-<data_sources>
-@[files or data to analyze]
-![relevant commands to gather data]
-</data_sources>
-
-<analysis_requirements>
-[Specific metrics or patterns to identify]
-[Depth of analysis needed - use "thoroughly analyze" for complex tasks]
-[Any comparisons or benchmarks]
-</analysis_requirements>
-
-<output_format>
-[How results should be structured]
-Save analysis to: `./analyses/[descriptive-name].md`
-</output_format>
-
-<verification>
-[How to validate the analysis is complete and accurate]
-</verification>
-```
-
-For Research Tasks:
-
-```xml
-<research_objective>
-[What information needs to be gathered]
-[Intended use of the research]
-For complex research, include: "Thoroughly explore multiple sources and consider various perspectives"
-</research_objective>
-
-<scope>
-[Boundaries of the research]
-[Sources to prioritize or avoid]
-[Time period or version constraints]
-</scope>
-
-<deliverables>
-[Format of research output]
-[Level of detail needed]
-Save findings to: `./research/[topic].md`
-</deliverables>
-
-<evaluation_criteria>
-[How to assess quality/relevance of sources]
-[Key questions that must be answered]
-</evaluation_criteria>
-
-<verification>
-Before completing, verify:
-- [All key questions are answered]
-- [Sources are credible and relevant]
-</verification>
-```
-</prompt_patterns>
+Use the templates defined in <prompt_patterns> above.
 </step_1_generate_and_save>
 
-<intelligence_rules>
+<execution_rules>
 
-1. **Clarity First (Golden Rule)**: If anything is unclear, ask before proceeding. A few clarifying questions save time. Test: Would a colleague with minimal context understand this prompt?
+<rule id="clarity">
+IF requirement is ambiguous AND clarifying would change output → AskUserQuestion first
+Test: Would a colleague with minimal context follow this prompt?
+</rule>
 
-2. **Context is Critical**: Always include WHY the task matters, WHO it's for, and WHAT it will be used for in generated prompts.
+<rule id="context">
+IF prompt is missing why (purpose), who (audience), or what (deliverable) → add before saving
+</rule>
 
-3. **Be Explicit**: Generate prompts with explicit, specific instructions. For ambitious results, include "go beyond the basics." For specific formats, state exactly what format is needed.
+<rule id="explicitness">
+IF task is ambitious → include "go beyond the basics"
+IF specific format needed → state exact format with examples
+DEFAULT: explicit instructions, never rely on inference
+</rule>
 
-4. **Scope Assessment**: Simple tasks get concise prompts. Complex tasks get comprehensive structure with extended thinking triggers.
+<rule id="scope">
+IF single-file, clear goal → concise prompt, no extended thinking
+IF multi-file, research, or optimization → comprehensive prompt with extended thinking triggers
+</rule>
 
-5. **Context Loading**: Only request file reading when the task explicitly requires understanding existing code. Use patterns like:
+<rule id="context-loading">
+IF modifies existing code → specific file refs (@package.json, @src/database/*)
+IF greenfield → skip file reading
+NEVER broad wildcards.
+</rule>
 
-   - "Examine @package.json for dependencies" (when adding new packages)
-   - "Review @src/database/\* for schema" (when modifying data layer)
-   - Skip file reading for greenfield features
+<rule id="precision">
+IF prompt could be read two ways → expand with specifics
+DEFAULT: longer and clear beats short and ambiguous
+</rule>
 
-6. **Precision vs Brevity**: Default to precision. A longer, clear prompt beats a short, ambiguous one.
+<rule id="tool-integration">
+IF MCP explicitly requested or obviously needed → include refs
+IF depends on system state → include env-checking bash commands
+IF multiple independent operations → include parallel tool guidance
+DEFAULT: specific file references, not wildcards
+</rule>
 
-7. **Tool Integration**:
+<rule id="output-paths">
+EVERY prompt specifies output paths as relative (./path/to/file).
+</rule>
 
-   - Include MCP servers only when explicitly mentioned or obviously needed
-   - Use bash commands for environment checking when state matters
-   - File references should be specific, not broad wildcards
-   - For multi-step agentic tasks, include parallel tool calling guidance
+<rule id="verification">
+EVERY prompt includes <verification> or <success_criteria>.
+IF testable → specific checks; IF subjective → concrete quality indicators.
+</rule>
 
-8. **Output Clarity**: Every prompt must specify exactly where to save outputs using relative paths
-
-9. **Verification Always**: Every prompt should include clear success criteria and verification steps
-</intelligence_rules>
+</execution_rules>
 
 <decision_tree>
 After saving the prompt(s), present this decision tree to the user:
