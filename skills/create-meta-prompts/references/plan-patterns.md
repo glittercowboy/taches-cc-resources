@@ -30,10 +30,6 @@ Structure the plan using this XML format:
 
 ```xml
 <plan>
-  <summary>
-    {One paragraph overview of the approach}
-  </summary>
-
   <phases>
     <phase number="1" name="{phase-name}">
       <objective>{What this phase accomplishes}</objective>
@@ -48,6 +44,10 @@ Structure the plan using this XML format:
     </phase>
     <!-- Additional phases -->
   </phases>
+
+  <summary>
+    {One paragraph overview of the approach}
+  </summary>
 
   <metadata>
     <confidence level="{high|medium|low}">
