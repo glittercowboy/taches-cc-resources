@@ -132,6 +132,27 @@ For each source consulted:
 </source_verification>
 ```
 
+### Pitfall 9: Summary Count Pre-Commitment
+**What**: Output skeleton places `<summary>` or `<count>` elements before the items they summarize, causing the model to pre-commit to counts before enumeration
+**Example**: Skeleton orders `<summary>` then `<findings>`. Model writes "Found 12 issues: 3 factual errors, 5 missing..." then enumerates 14 actual findings. Summary is frozen at 12.
+**Why it happens**: Autoregressive models cannot revise already-emitted tokens. Implicit counting degrades over long outputs (>10 items). Multi-dimensional breakdowns compound the error.
+**Prevention**:
+```xml
+<output_structure_rules>
+Items MUST precede their summary:
+- [ ] <findings> before <summary>, never reversed
+- [ ] Use [Will complete at end] placeholder if summary position is fixed
+- [ ] Never place <count> fields before the items they count
+- [ ] Avoid count-heavy SUMMARY.md one-liners
+- [ ] For large enumerations (>30 items): use sequential IDs as implicit count
+- [ ] For multi-dimensional classification: single dimension per pass
+</output_structure_rules>
+```
+**What does NOT work**:
+- "Count carefully" instructions -- errors are architectural (autoregressive token commitment), not carelessness
+- "Double-check your counts" -- re-checking uses the same degraded attention that produced the error
+- "Write summary first, then enumerate to match" -- produces classification errors (force-fitting/omitting items to match pre-committed counts)
+
 ## Red Flags in Research Outputs
 
 ### 🚩 Red Flag 1: Zero "Not Found" Results
@@ -158,6 +179,11 @@ For each source consulted:
 **Warning**: Verification checklist lists 4 items, output covers 2
 **Problem**: Systematic gaps in coverage
 **Action**: Ensure all enumerated items addressed or marked "not found"
+
+### 🚩 Red Flag 6: Count-Heavy Summary One-Liners
+**Warning**: SUMMARY.md one-liner contains multi-dimensional count breakdowns like "38 practices mapped: 8 type-A, 14 type-B, 9 type-C, 7 type-D"
+**Problem**: Count-heavy one-liners prime models to pre-commit to specific multi-dimensional counts before enumeration is complete
+**Action**: Replace with descriptive one-liners; derive counts from enumerated output after writing, not during summary generation
 
 ## Continuous Improvement
 
