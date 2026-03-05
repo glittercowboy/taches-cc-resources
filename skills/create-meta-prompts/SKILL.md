@@ -173,6 +173,8 @@ All generated prompts include:
 2. **Context**: Referenced files (@), dynamic context (!)
 3. **Requirements**: Specific instructions for the task
 4. **Output specification**: Where to save, what structure
+   - XML output skeletons must place enumeration sections (`<findings>`, `<phases>`, etc.) before `<summary>` -- never summary before items
+   - Use `[Will complete at end]` deferred placeholders for counts or summaries that depend on enumerated content; avoid pre-committed `<count>` fields before the items they count
 5. **Metadata requirements**: For research/plan outputs, specify XML metadata structure
 6. **SUMMARY.md requirement**: All prompts must create a SUMMARY.md file
 7. **Success criteria**: How to know it worked
@@ -184,7 +186,7 @@ For Research and Plan prompts, output must include:
 - `<assumptions>` - What was assumed
 
 All prompts must create `SUMMARY.md` with:
-- **One-liner** - Substantive description of outcome
+- **One-liner** - Substantive description of outcome (descriptive, not count-heavy breakdowns)
 - **Version** - v1 or iteration info
 - **Key Findings** - Actionable takeaways
 - **Files Created** - (Do prompts only)
