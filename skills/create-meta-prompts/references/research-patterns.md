@@ -170,7 +170,6 @@ Structure findings using this XML format:
   </metadata>
 </research>
 ```
-</output_structure>
 
 <pre_submission_checklist>
 Before submitting your research report, confirm:
@@ -197,7 +196,6 @@ Before submitting your research report, confirm:
 - [ ] Sources consulted listed with URLs
 - [ ] Next steps clearly identified
 </pre_submission_checklist>
-```
 </output_structure>
 
 <incremental_output>
