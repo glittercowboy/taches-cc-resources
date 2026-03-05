@@ -106,10 +106,6 @@ Structure findings using this XML format:
 
 ```xml
 <research>
-  <summary>
-    {2-3 paragraph executive summary of key findings}
-  </summary>
-
   <findings>
     <finding category="{category}">
       <title>{Finding title}</title>
@@ -131,6 +127,10 @@ Structure findings using this XML format:
   <code_examples>
     {Relevant code patterns, snippets, configurations}
   </code_examples>
+
+  <summary>
+    [Will complete at end]
+  </summary>
 
   <metadata>
     <confidence level="{high|medium|low}">
@@ -251,10 +251,10 @@ Write findings incrementally to {topic}-research.md as you discover them:
 1. Create the file with this initial structure:
    ```xml
    <research>
-     <summary>[Will complete at end]</summary>
      <findings></findings>
      <recommendations></recommendations>
      <code_examples></code_examples>
+     <summary>[Will complete at end]</summary>
      <metadata></metadata>
    </research>
    ```
@@ -265,8 +265,8 @@ Write findings incrementally to {topic}-research.md as you discover them:
    - Find code example → Append to code_examples
 
 3. After all research complete:
-   - Write summary (synthesize all findings)
    - Write recommendations (based on findings)
+   - Write summary (synthesize all findings)
    - Write metadata (confidence, dependencies, etc.)
 
 This incremental approach ensures all work is saved even if execution
