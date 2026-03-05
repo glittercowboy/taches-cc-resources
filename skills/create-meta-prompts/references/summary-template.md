@@ -52,6 +52,14 @@ Must be substantive - describes actual outcome, not status.
 
 **Good**: "JWT middleware complete with 6 files in src/auth/"
 **Bad**: "Implementation finished"
+
+Avoid count-heavy breakdowns that pre-commit to specific numbers before items are enumerated:
+
+**Good**: "Hybrid PARA-based workspace architecture with GSD research lifecycle integration"
+**Bad**: "38 practices mapped: 8 fully automated, 14 assisted, 9 user-initiated, 7 user-only"
+
+**Good**: "JWT authentication with refresh token rotation and role-based access"
+**Bad**: "12 issues found: 3 factual errors, 5 missing practices, 2 outdated, 2 structural"
 </one_liner>
 
 <key_findings>
