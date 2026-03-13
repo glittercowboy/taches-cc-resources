@@ -1,6 +1,6 @@
 ---
 name: create-meta-prompts
-description: Create optimized prompts for Claude-to-Claude pipelines with research, planning, and execution stages. Use when building prompts that produce outputs for other prompts to consume, or when running multi-stage workflows (research -> plan -> implement).
+description: Creates optimized prompts for Claude-to-Claude pipelines by designing stage handoffs, structuring intermediate outputs with XML metadata, and optimizing prompt chaining across research, planning, and execution stages. Handles multi-stage workflows where each prompt produces structured artifacts for subsequent prompts to consume. Use when building prompt chains, agentic workflows, multi-step Claude pipelines, designing prompts that feed into other prompts, or orchestrating Claude-to-Claude communication.
 ---
 
 <objective>
@@ -222,23 +222,7 @@ Choose (1-4): _
 </single_prompt_presentation>
 
 <multi_prompt_presentation>
-```
-Prompts created:
-- .prompts/001-auth-research/001-auth-research.md
-- .prompts/002-auth-plan/002-auth-plan.md
-- .prompts/003-auth-implement/003-auth-implement.md
-
-Detected execution order: Sequential (002 references 001 output, 003 references 002 output)
-
-What's next?
-
-1. Run all prompts (sequential)
-2. Review/edit prompts first
-3. Save for later
-4. Other
-
-Choose (1-4): _
-```
+List all created prompts with detected execution order (sequential/parallel/mixed), then offer: Run all / Review first / Save for later / Other.
 </multi_prompt_presentation>
 </step_2_present>
 
@@ -246,310 +230,48 @@ Choose (1-4): _
 <title>Execution Engine</title>
 
 <execution_modes>
-<single_prompt>
-Straightforward execution of one prompt.
+For each prompt: read file → spawn Task agent (subagent_type="general-purpose") with prompt contents and output location → validate → archive to `completed/`.
 
-1. Read prompt file contents
-2. Spawn Task agent with subagent_type="general-purpose"
-3. Include in task prompt:
-   - The complete prompt contents
-   - Output location: `.prompts/{number}-{topic}-{purpose}/{topic}-{purpose}.md`
-4. Wait for completion
-5. Validate output (see validation section)
-6. Archive prompt to `completed/` subfolder
-7. Report results with next-step options
-</single_prompt>
+**Mode selection by dependency analysis:**
+- **Single/Sequential**: Execute in dependency order. Stop chain on validation failure, offer recovery.
+- **Parallel**: Spawn ALL Task agents in a SINGLE message (required for true parallelism). Continue even if some fail; report all results.
+- **Mixed (DAG)**: Group into layers by dependency depth. Parallel within layers, sequential between. Stop if dependency fails.
 
-<sequential_execution>
-For chained prompts where each depends on previous output.
-
-1. Build execution queue from dependency order
-2. For each prompt in queue:
-   a. Read prompt file
-   b. Spawn Task agent
-   c. Wait for completion
-   d. Validate output
-   e. If validation fails → stop, report failure, offer recovery options
-   f. If success → archive prompt, continue to next
-3. Report consolidated results
-
-<progress_reporting>
-Show progress during execution:
-```
-Executing 1/3: 001-auth-research... ✓
-Executing 2/3: 002-auth-plan... ✓
-Executing 3/3: 003-auth-implement... (running)
-```
-</progress_reporting>
-</sequential_execution>
-
-<parallel_execution>
-For independent prompts with no dependencies.
-
-1. Read all prompt files
-2. **CRITICAL**: Spawn ALL Task agents in a SINGLE message
-   - This is required for true parallel execution
-   - Each task includes its output location
-3. Wait for all to complete
-4. Validate all outputs
-5. Archive all prompts
-6. Report consolidated results (successes and failures)
-
-<failure_handling>
-Unlike sequential, parallel continues even if some fail:
-- Collect all results
-- Archive successful prompts
-- Report failures with details
-- Offer to retry failed prompts
-</failure_handling>
-</parallel_execution>
-
-<mixed_dependencies>
-For complex DAGs (e.g., two parallel research → one plan).
-
-1. Analyze dependency graph from @ references
-2. Group into execution layers:
-   - Layer 1: No dependencies (run parallel)
-   - Layer 2: Depends only on layer 1 (run after layer 1 completes)
-   - Layer 3: Depends on layer 2, etc.
-3. Execute each layer:
-   - Parallel within layer
-   - Sequential between layers
-4. Stop if any dependency fails (downstream prompts can't run)
-
-<example>
-```
-Layer 1 (parallel): 001-api-research, 002-db-research
-Layer 2 (after layer 1): 003-architecture-plan
-Layer 3 (after layer 2): 004-implement
-```
-</example>
-</mixed_dependencies>
+Show progress inline: `Executing 2/3: 002-auth-plan... ✓`
 </execution_modes>
 
 <dependency_detection>
-<automatic_detection>
-Scan prompt contents for @ references to determine dependencies:
+Parse `@.prompts/{number}-{topic}/` references → build dependency graph → detect cycles → determine order.
 
-1. Parse each prompt for `@.prompts/{number}-{topic}/` patterns
-2. Build dependency graph
-3. Detect cycles (error if found)
-4. Determine execution order
+**Inference** (when no explicit @ references): Research=no deps, Plan=depends on same-topic research, Do=depends on same-topic plan. Explicit references override.
 
-<inference_rules>
-If no explicit @ references found, infer from purpose:
-- Research prompts: No dependencies (can parallel)
-- Plan prompts: Depend on same-topic research
-- Do prompts: Depend on same-topic plan
-
-Override with explicit references when present.
-</inference_rules>
-</automatic_detection>
-
-<missing_dependencies>
-If a prompt references output that doesn't exist:
-
-1. Check if it's another prompt in this session (will be created)
-2. Check if it exists in `.prompts/*/` (already completed)
-3. If truly missing:
-   - Warn user: "002-auth-plan references auth-research.md which doesn't exist"
-   - Offer: Create the missing research prompt first? / Continue anyway? / Cancel?
-</missing_dependencies>
+**Missing dependencies**: Check session prompts → check `.prompts/*/` → warn user and offer to create, continue, or cancel.
 </dependency_detection>
 
 <validation>
-<output_validation>
-After each prompt completes, verify success:
+After each prompt completes, verify:
+1. Output file exists and has content (> 100 chars)
+2. Research/plan outputs include required XML tags: `<confidence>`, `<dependencies>`, `<open_questions>`, `<assumptions>`
+3. SUMMARY.md exists with required sections (Key Findings, Decisions Needed, Blockers, Next Step)
+4. One-liner is substantive (not generic like "Research completed")
 
-1. **File exists**: Check output file was created
-2. **Not empty**: File has content (> 100 chars)
-3. **Metadata present** (for research/plan): Check for required XML tags
-   - `<confidence>`
-   - `<dependencies>`
-   - `<open_questions>`
-   - `<assumptions>`
-4. **SUMMARY.md exists**: Check SUMMARY.md was created
-5. **SUMMARY.md complete**: Has required sections (Key Findings, Decisions Needed, Blockers, Next Step)
-6. **One-liner is substantive**: Not generic like "Research completed"
-
-<validation_failure>
-If validation fails:
-- Report what's missing
-- Offer options:
-  - Retry the prompt
-  - Continue anyway (for non-critical issues)
-  - Stop and investigate
-</validation_failure>
-</output_validation>
+On failure: report what's missing, offer retry / continue / stop.
 </validation>
 
-<failure_handling>
-<sequential_failure>
-Stop the chain immediately:
-```
-✗ Failed at 2/3: 002-auth-plan
-
-Completed:
-- 001-auth-research ✓ (archived)
-
-Failed:
-- 002-auth-plan: Output file not created
-
-Not started:
-- 003-auth-implement
-
-What's next?
-1. Retry 002-auth-plan
-2. View error details
-3. Stop here (keep completed work)
-4. Other
-```
-</sequential_failure>
-
-<parallel_failure>
-Continue others, report all results:
-```
-Parallel execution completed with errors:
-
-✓ 001-api-research (archived)
-✗ 002-db-research: Validation failed - missing <confidence> tag
-✓ 003-ui-research (archived)
-
-What's next?
-1. Retry failed prompt (002)
-2. View error details
-3. Continue without 002
-4. Other
-```
-</parallel_failure>
-</failure_handling>
+**Failure handling**: Sequential stops chain on failure; parallel continues and collects all results. See [references/failure-handling.md](references/failure-handling.md) for presentation templates.
 
 <archiving>
-<archive_timing>
-- **Sequential**: Archive each prompt immediately after successful completion
-  - Provides clear state if execution stops mid-chain
-- **Parallel**: Archive all at end after collecting results
-  - Keeps prompts available for potential retry
-
-<archive_operation>
-Move prompt file to completed subfolder:
-```bash
-mv .prompts/{number}-{topic}-{purpose}/{number}-{topic}-{purpose}.md \
-   .prompts/{number}-{topic}-{purpose}/completed/
-```
-
-Output file stays in place (not moved).
-</archive_operation>
+Archive by moving prompt to `completed/` subfolder (output stays in place). Sequential: archive immediately after each success. Parallel: archive all at end.
 </archiving>
 
 <result_presentation>
-<single_result>
-```
-✓ Executed: 001-auth-research
-✓ Created: .prompts/001-auth-research/SUMMARY.md
+Display SUMMARY.md content inline so user sees findings without opening files.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Auth Research Summary
-
-**JWT with jose library and httpOnly cookies recommended**
-
-## Key Findings
-• jose outperforms jsonwebtoken with better TypeScript support
-• httpOnly cookies required (localStorage is XSS vulnerable)
-• Refresh rotation is OWASP standard
-
-## Decisions Needed
-None - ready for planning
-
-## Blockers
-None
-
-## Next Step
-Create auth-plan.md
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-What's next?
-1. Create planning prompt (auth-plan)
-2. View full research output
-3. Done
-4. Other
-```
-
-Display the actual SUMMARY.md content inline so user sees findings without opening files.
-</single_result>
-
-<chain_result>
-```
-✓ Chain completed: auth workflow
-
-Results:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-001-auth-research
-**JWT with jose library and httpOnly cookies recommended**
-Decisions: None • Blockers: None
-
-002-auth-plan
-**4-phase implementation: types → JWT core → refresh → tests**
-Decisions: Approve 15-min token expiry • Blockers: None
-
-003-auth-implement
-**JWT middleware complete with 6 files created**
-Decisions: Review before Phase 2 • Blockers: None
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-All prompts archived. Full summaries in .prompts/*/SUMMARY.md
-
-What's next?
-1. Review implementation
-2. Run tests
-3. Create new prompt chain
-4. Other
-```
-
-For chains, show condensed one-liner from each SUMMARY.md with decisions/blockers flagged.
-</chain_result>
+- **Single prompt**: Show status, display full SUMMARY.md content, offer next-step options (create follow-up / view full output / done)
+- **Chain**: Show condensed one-liner from each SUMMARY.md with decisions/blockers flagged, then offer review/test/new-chain options
 </result_presentation>
 
-<special_cases>
-<re_running_completed>
-If user wants to re-run an already-completed prompt:
-
-1. Check if prompt is in `completed/` subfolder
-2. Move it back to parent folder
-3. Optionally backup existing output: `{output}.bak`
-4. Execute normally
-</re_running_completed>
-
-<output_conflicts>
-If output file already exists:
-
-1. For re-runs: Backup existing → `{filename}.bak`
-2. For new runs: Should not happen (unique numbering)
-3. If conflict detected: Ask user - Overwrite? / Rename? / Cancel?
-</output_conflicts>
-
-<commit_handling>
-After successful execution:
-
-1. Do NOT auto-commit (user controls git workflow)
-2. Mention what files were created/modified
-3. User can commit when ready
-
-Exception: If user explicitly requests commit, stage and commit:
-- Output files created
-- Prompts archived
-- Any implementation changes (for Do prompts)
-</commit_handling>
-
-<recursive_prompts>
-If a prompt's output includes instructions to create more prompts:
-
-1. This is advanced usage - don't auto-detect
-2. Present the output to user
-3. User can invoke skill again to create follow-up prompts
-4. Maintains user control over prompt creation
-</recursive_prompts>
-</special_cases>
+**Special cases** (re-runs, output conflicts, commit handling, recursive prompts): See [references/special-cases.md](references/special-cases.md)
 </step_3_execute>
 
 </automated_workflow>
@@ -568,6 +290,8 @@ If a prompt's output includes instructions to create more prompts:
 **Supporting references:**
 - [references/question-bank.md](references/question-bank.md) - Intake questions by purpose
 - [references/intelligence-rules.md](references/intelligence-rules.md) - Extended thinking, parallel tools, depth decisions
+- [references/failure-handling.md](references/failure-handling.md) - Failure presentation templates for sequential and parallel execution
+- [references/special-cases.md](references/special-cases.md) - Re-runs, output conflicts, commit handling, recursive prompts
 </reference_guides>
 
 <success_criteria>

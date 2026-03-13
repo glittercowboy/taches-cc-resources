@@ -1,6 +1,6 @@
 ---
 name: create-agent-skills
-description: Expert guidance for creating, writing, building, and refining Claude Code Skills. Use when working with SKILL.md files, authoring new skills, improving existing skills, or understanding skill structure and best practices.
+description: Validates YAML frontmatter, writes effective description fields, structures filetype and path globs, defines trigger conditions, and authors router-pattern SKILL.md files. Guides the agent through creating new skills, auditing existing skills against best practices, adding workflows or references, and upgrading simple skills to the router pattern. Use when creating a skill, writing a skill file, editing SKILL.md files, authoring new skills, improving existing skills, or understanding skill structure and best practices.
 ---
 
 <essential_principles>

@@ -1,6 +1,6 @@
 ---
 name: build-macos-apps
-description: Build professional native macOS apps in Swift with SwiftUI and AppKit. Full lifecycle - build, debug, test, optimize, ship. CLI-only, no Xcode.
+description: Guides the agent through building professional native macOS apps in Swift with SwiftUI and AppKit, covering the full lifecycle — build, debug, test, optimize, and ship — entirely from the CLI without Xcode. Use when building macOS applications, working with Swift or SwiftUI projects, developing without Xcode, creating menu-bar or document-based Mac apps, or when the user needs help with code signing, notarization, or App Store distribution.
 ---
 
 <essential_principles>

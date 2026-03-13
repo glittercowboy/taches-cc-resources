@@ -1,6 +1,6 @@
 ---
 name: build-iphone-apps
-description: Build professional native iPhone apps in Swift with SwiftUI and UIKit. Full lifecycle - build, debug, test, optimize, ship. CLI-only, no Xcode. Targets iOS 26 with iOS 18 compatibility.
+description: Guides the agent through building professional native iPhone apps in Swift with SwiftUI and UIKit, covering the full lifecycle — build, debug, test, optimize, and ship. CLI-only workflow without Xcode, targeting iOS 26 with iOS 18 compatibility. Use when the user wants to create iPhone apps, start iOS development, build Swift projects, work with SwiftUI or UIKit, develop a mobile app, publish to the App Store, manage Apple development workflows, or edit .swift files.
 ---
 
 <essential_principles>
