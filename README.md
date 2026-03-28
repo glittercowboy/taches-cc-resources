@@ -245,4 +245,6 @@ More resources coming soon.
 
 **Community Ports:** [OpenCode](https://github.com/stephenschoettler/taches-oc-prompts)
 
+**Related Tools:** [claude-dash](https://github.com/krabat-l/claude-dash) - Real-time statusline for Claude Code showing context, cost, quota, cache, tools, and git status
+
 —TÂCHES
