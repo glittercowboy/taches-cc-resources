@@ -1,4 +1,5 @@
 # TÂCHES Claude Code Resources
+- [skill-taxonomy](https://github.com/SeeleAI/skill-taxonomy) - Structured taxonomy for AI agent skills: discovery, classification and routing across multi-agent workflows.
 
 A growing collection of custom Claude Code resources built for real workflows.
 
