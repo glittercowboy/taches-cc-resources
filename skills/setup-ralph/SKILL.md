@@ -1,6 +1,6 @@
 ---
 name: setup-ralph
-description: Set up and configure Geoffrey Huntley's original Ralph Wiggum autonomous coding loop in any directory with proper structure, prompts, and backpressure.
+description: Sets up and configures Geoffrey Huntley's Ralph Wiggum autonomous coding loop — creates PROMPT_plan.md and PROMPT_build.md files, generates backpressure validation (tests, lints, typechecks), and initializes the iterative bash loop structure in any directory. Use when setting up Ralph Wiggum, configuring an autonomous coding loop, creating a multi-agent Claude workflow, bootstrapping parallel agentic instances, or troubleshooting an existing Ralph loop. Covers multi-agent setup, parallel Claude instances, agentic loop configuration, and backpressure-driven development.
 ---
 
 <essential_principles>
@@ -14,9 +14,9 @@ while :; do cat PROMPT.md | claude ; done
 
 The loop feeds a prompt file to Claude, the agent completes one task, updates the implementation plan, commits changes, then exits. The loop restarts immediately with fresh context.
 
-### Core Philosophy
+### Core Insight
 
-**The Ralph Wiggum Technique is deterministically bad in an undeterministic world.** Ralph solves context accumulation by starting each iteration with fresh context—the core insight behind Geoffrey's approach.
+Ralph solves context accumulation by starting each iteration with fresh context — each loop cycle gets a clean 200K token window, avoiding the degradation that comes from long-running sessions.
 
 ### Three Phases, Two Prompts, One Loop
 
@@ -39,6 +39,24 @@ The loop feeds a prompt file to Claude, the agent completes one task, updates th
 **Remote Backup**: The loop automatically creates a private GitHub repo and pushes after each commit. This protects against accidental data loss from autonomous operations. Requires `gh` CLI authenticated. Disable with `RALPH_BACKUP=false`.
 
 **Safety Rules**: PROMPT_build.md includes critical safety rules prohibiting dangerous operations like `rm -rf` on project directories. Tests must run in isolated temp directories.
+
+### Quick Start
+
+To bootstrap a minimal Ralph loop in an existing project:
+
+1. Create `PROMPT_plan.md` — instructs Claude to analyze gaps between specs and code, output a prioritized TODO list, and commit only the updated plan (no implementation).
+2. Create `PROMPT_build.md` — instructs Claude to pick one task from the plan, implement it, run validation (tests/lint/build), commit on success, and exit.
+3. Run the loop:
+
+```bash
+# Planning pass (run once or periodically)
+cat PROMPT_plan.md | claude
+
+# Building loop (runs continuously)
+while :; do cat PROMPT_build.md | claude ; done
+```
+
+Use the **setup-new-loop** workflow below for a fully scaffolded setup with backpressure, safety rules, and remote backup.
 </essential_principles>
 
 <intake>

@@ -1,6 +1,6 @@
 ---
 name: create-subagents
-description: Expert guidance for creating, building, and using Claude Code subagents and the Task tool. Use when working with subagents, setting up agent configurations, understanding how agents work, or using the Task tool to launch specialized agents.
+description: Expert guidance for creating, building, and using Claude Code subagents and the Task tool. Covers defining system prompts, configuring agent permissions, managing agent lifecycle, debugging agent behavior, and orchestrating multi-agent workflows. Use when working with subagents, setting up agent configurations, or using the Task tool to launch specialized agents.
 ---
 
 <objective>
@@ -101,23 +101,13 @@ The main conversation sees only the subagent's final report/output.
 <workflow_design>
 **Designing workflows with subagents:**
 
-Use **main chat** for:
-- Gathering requirements from user (AskUserQuestion)
-- Presenting options or decisions to user
-- Any task requiring user confirmation/input
-- Work where user needs visibility into progress
-
-Use **subagents** for:
-- Research tasks (API documentation lookup, code analysis)
-- Code generation based on pre-defined requirements
-- Analysis and reporting (security review, test coverage)
-- Context-heavy operations that don't need user interaction
+Use **main chat** for tasks requiring user interaction (gathering requirements, presenting options, confirming decisions). Use **subagents** for autonomous work (research, code generation, analysis, reporting).
 
 **Example workflow pattern:**
 ```
 Main Chat: Ask user for requirements (AskUserQuestion)
   ↓
-Subagent: Research API and create documentation (no user interaction)
+Subagent: Research API and create documentation
   ↓
 Main Chat: Review research with user, confirm approach
   ↓
@@ -134,34 +124,7 @@ Clearly define the subagent's role, capabilities, and constraints.
 </principle>
 
 <principle name="use_pure_xml_structure">
-Structure the system prompt with pure XML tags. Remove ALL markdown headings from the body.
-
-```markdown
----
-name: security-reviewer
-description: Reviews code for security vulnerabilities
-tools: Read, Grep, Glob, Bash
-model: sonnet
----
-
-<role>
-You are a senior code reviewer specializing in security.
-</role>
-
-<focus_areas>
-- SQL injection vulnerabilities
-- XSS attack vectors
-- Authentication/authorization issues
-- Sensitive data exposure
-</focus_areas>
-
-<workflow>
-1. Read the modified files
-2. Identify security risks
-3. Provide specific remediation steps
-4. Rate severity (Critical/High/Medium/Low)
-</workflow>
-```
+Structure the system prompt with pure XML tags. Remove ALL markdown headings from the body. See the XML structure section below for recommended tags, complexity tiers, and a full example.
 </principle>
 
 <principle name="task_specific">
