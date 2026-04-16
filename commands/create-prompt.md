@@ -5,9 +5,25 @@ allowed-tools: [Read, Write, Glob, SlashCommand, AskUserQuestion]
 ---
 
 <context>
-Before generating prompts, use the Glob tool to check `./prompts/*.md` to:
-1. Determine if the prompts directory exists
-2. Find the highest numbered prompt to determine next sequence number
+Before generating prompts:
+1. Read `./prompts/index.json` to get category list and next available numbers
+2. If `index.json` doesn't exist, fall back to `Glob ./prompts/**/*.md` and determine next number manually
+
+Prompts are organized in category subfolders with numbering by hundreds:
+```
+prompts/
+├── index.json              # Source of truth for next numbers
+├── 1xx-category-name/      # Active prompts for this category
+│   └── completed/          # Archived prompts
+├── 2xx-another-category/
+│   └── completed/
+└── INDEX.md                # Human-readable overview (no counts)
+```
+
+When creating a prompt:
+1. Read `./prompts/index.json` to find the right category and its `next` number
+2. Save the prompt in the category subfolder: `./prompts/{category}/{number}-{name}.md`
+3. Bump `next` in `index.json` by 1
 </context>
 
 <objective>
@@ -169,13 +185,15 @@ Create the prompt(s) and save to the prompts folder.
 **For single prompts:**
 
 - Generate one prompt file following the patterns below
-- Save as `./prompts/[number]-[name].md`
+- Read `./prompts/index.json` to determine the correct category and next number
+- Save as `./prompts/{category}/{number}-{name}.md` (e.g., `./prompts/2xx-job-search/233-apply-google.md`)
+- Bump `next` in `index.json` for that category
 
 **For multiple prompts:**
 
 - Determine how many prompts are needed (typically 2-4)
 - Generate each prompt with clear, focused objectives
-- Save sequentially: `./prompts/[N]-[name].md`, `./prompts/[N+1]-[name].md`, etc.
+- All prompts in the same category get sequential numbers from `index.json`
 - Each prompt should be self-contained and executable independently
 
 **Prompt Construction Rules**
@@ -213,11 +231,13 @@ Conditionally Include (based on analysis):
 Output Format:
 
 1. Generate prompt content with XML structure
-2. Save to: `./prompts/[number]-[descriptive-name].md`
-   - Number format: 001, 002, 003, etc. (check existing files in ./prompts/ to determine next number)
+2. Read `./prompts/index.json` to get the category and next number
+3. Save to: `./prompts/{category}/{number}-{descriptive-name}.md`
+   - Number format: 3-digit zero-padded from index.json (e.g., 233, 505)
    - Name format: lowercase, hyphen-separated, max 5 words describing the task
-   - Example: `./prompts/001-implement-user-authentication.md`
-3. File should contain ONLY the prompt, no explanations or metadata
+   - Example: `./prompts/2xx-job-search/233-apply-google.md`
+4. Bump `next` in `index.json` for that category (increment by 1)
+5. File should contain ONLY the prompt, no explanations or metadata
 
 <prompt_patterns>
 
@@ -457,7 +477,9 @@ If user chooses #2, invoke via SlashCommand tool: `/run-prompt 005`
 
 - **Intake first**: Complete step_0_intake_gate before generating. Use AskUserQuestion for structured clarification.
 - **Decision gate loop**: Keep asking questions until user selects "Proceed"
-- Use Glob tool with `./prompts/*.md` to find existing prompts and determine next number in sequence
+- **Numbering**: Read `./prompts/index.json` for category list and next available numbers. If it doesn't exist, fall back to Glob `./prompts/**/*.md`.
+- **Saving**: Save prompts in category subfolders (e.g., `./prompts/2xx-job-search/233-name.md`), NOT at the root of `./prompts/`.
+- **Bumping**: After saving, update `next` in `index.json` for the category used.
 - If ./prompts/ doesn't exist, use Write tool to create the first prompt (Write will create parent directories)
 - Keep prompt filenames descriptive but concise
 - Adapt the XML structure to fit the task - not every tag is needed every time

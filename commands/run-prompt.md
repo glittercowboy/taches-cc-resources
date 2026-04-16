@@ -7,7 +7,8 @@ allowed-tools: [Read, Task, Bash(ls:*), Bash(mv:*), Bash(git:*)]
 
 <context>
 Git status: !`git status --short`
-Recent prompts: !`ls -t ./prompts/*.md | head -5`
+Prompt index: !`cat ./prompts/index.json 2>/dev/null || echo "no index.json"`
+Recent prompts: !`find ./prompts -name '*.md' -not -path '*/completed/*' -not -name 'INDEX.md' | sort -t/ -k4 -rn | head -10`
 </context>
 
 <objective>
@@ -47,15 +48,16 @@ Parse $ARGUMENTS to extract:
 <step2_resolve_files>
 For each prompt number/name:
 
-- If empty or "last": Find with `!ls -t ./prompts/*.md | head -1`
-- If a number: Find file matching that zero-padded number (e.g., "5" matches "005-_.md", "42" matches "042-_.md")
-- If text: Find files containing that string in the filename
+- If empty or "last": Find most recently modified prompt with `find ./prompts -name '*.md' -not -path '*/completed/*' -not -name 'INDEX.md' | xargs ls -t | head -1`
+- If a number: Search ALL category subfolders for a file starting with that number. Use glob `./prompts/**/{number}*.md` (exclude completed/). For example, "233" matches `./prompts/2xx-job-search/233-apply-google.md`.
+- If text: Find files containing that string in the filename across all subfolders
 
 <matching_rules>
 
 - If exactly one match found: Use that file
 - If multiple matches found: List them and ask user to choose
 - If no matches found: Report error and list available prompts
+- IMPORTANT: Search recursively in `./prompts/**/` — prompts are in category subfolders, NOT at the root
   </matching_rules>
   </step2_resolve_files>
 
@@ -65,7 +67,7 @@ For each prompt number/name:
 1. Read the complete contents of the prompt file
 2. Delegate as sub-task using Task tool with subagent_type="general-purpose"
 3. Wait for completion
-4. Archive prompt to `./prompts/completed/` with metadata
+4. Archive prompt to `completed/` subfolder WITHIN its category (e.g., `./prompts/2xx-job-search/completed/233-name.md`), NOT to a root `./prompts/completed/`
 5. Commit all work:
    - Stage files YOU modified with `git add [file]` (never `git add .`)
    - Determine appropriate commit type based on changes (fix|feat|refactor|style|docs|test|chore)
@@ -84,7 +86,7 @@ For each prompt number/name:
    (All in one message with multiple tool calls)
    </example>
 3. Wait for ALL to complete
-4. Archive all prompts with metadata
+4. Archive all prompts to their category's `completed/` subfolder
 5. Commit all work:
    - Stage files YOU modified with `git add [file]` (never `git add .`)
    - Determine appropriate commit type based on changes (fix|feat|refactor|style|docs|test|chore)
@@ -103,7 +105,7 @@ For each prompt number/name:
 7. Wait for completion
 8. Archive second prompt
 9. Repeat for remaining prompts
-10. Archive all prompts with metadata
+10. Archive all prompts to their category's `completed/` subfolder
 11. Commit all work:
     - Stage files YOU modified with `git add [file]` (never `git add .`)
     - Determine appropriate commit type based on changes (fix|feat|refactor|style|docs|test|chore)
